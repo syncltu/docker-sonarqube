@@ -80,8 +80,8 @@ RUN set -eux; \
 #
 # SonarQube setup
 #
-ARG SONARQUBE_VERSION=8.4.2.36762
-ARG SONARQUBE_ZIP_URL=https://binaries.sonarsource.com/CommercialDistribution/sonarqube-enterprise/sonarqube-enterprise-${SONARQUBE_VERSION}.zip
+ARG SONARQUBE_VERSION=8.5-SNAPSHOT
+ARG SONARQUBE_ZIP_URL=sonarqube-enterprise-${SONARQUBE_VERSION}.zip
 ENV JAVA_HOME=/opt/java/openjdk \
     PATH="/opt/java/openjdk/bin:$PATH" \
     SONARQUBE_HOME=/opt/sonarqube \
@@ -90,6 +90,8 @@ ENV JAVA_HOME=/opt/java/openjdk \
     SQ_EXTENSIONS_DIR="/opt/sonarqube/extensions" \
     SQ_LOGS_DIR="/opt/sonarqube/logs" \
     SQ_TEMP_DIR="/opt/sonarqube/temp"
+
+COPY ${SONARQUBE_ZIP_URL} /tmp/sonarqube.zip
 
 RUN set -ex \
     && addgroup -S -g 1000 sonarqube \
@@ -110,9 +112,7 @@ RUN set -ex \
     done \
     && mkdir --parents /opt \
     && cd /opt \
-    && curl --fail --location --output sonarqube.zip --silent --show-error "${SONARQUBE_ZIP_URL}" \
-    && curl --fail --location --output sonarqube.zip.asc --silent --show-error "${SONARQUBE_ZIP_URL}.asc" \
-    && gpg --batch --verify sonarqube.zip.asc sonarqube.zip \
+    && mv /tmp/sonarqube.zip . \
     && unzip -q sonarqube.zip \
     && mv "sonarqube-${SONARQUBE_VERSION}" sonarqube \
     && rm sonarqube.zip* \
