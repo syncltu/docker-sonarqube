@@ -21,7 +21,7 @@ function show_help() {
 
 ##########
 ## Main ##
-##########
+###########
 
 OLD_VERSION=""
 NEW_VERSION=""
